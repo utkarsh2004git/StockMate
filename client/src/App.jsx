@@ -1,15 +1,16 @@
-// App.js
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Landing from './pages/Landing';
+
+import Footer from './components/Footer'
+import Navbar from './components/Navbar'
+import { Outlet } from 'react-router-dom'
 
 const App = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Landing />
-      {/* Use <Outlet /> if you're using nested routes */}
-    </div>
-  );
-};
+    <>
+    <Navbar/>
+    <Outlet/>
+    <Footer/>
+    </>
+  )
+}
 
-export default App;
+export default App
