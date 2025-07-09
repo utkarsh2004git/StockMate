@@ -3,7 +3,7 @@ import landingImg from "../assets/landingImg.png";
 
 export default function Landing() {
   return (
-    <section className="min-h-screen flex flex-col-reverse md:flex-row items-center justify-center px-6 md:px-16 py-16 bg-white relative overflow-hidden">
+    <section className="min-h-screen flex flex-col-reverse md:flex-row items-center justify-center px-6 md:px-16 py-16 bg-white  relative overflow-hidden">
       {/* Background Blurs */}
       <div className="absolute w-72 h-72 bg-teal-100 rounded-full blur-3xl opacity-30 top-10 -left-20 z-0" />
       <div className="absolute w-96 h-96 bg-cyan-100 rounded-full blur-3xl opacity-20 bottom-0 -right-16 z-0" />
