@@ -1,17 +1,13 @@
+// App.js
 import React from 'react';
-import Header from './components/Header';
 import { Outlet } from 'react-router-dom';
+import Landing from './pages/Landing';
 
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Site Header */}
-      <Header />
-
-      {/* Page Content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <Landing />
+      {/* Use <Outlet /> if you're using nested routes */}
     </div>
   );
 };
