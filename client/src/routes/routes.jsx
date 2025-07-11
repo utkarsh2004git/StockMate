@@ -1,7 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import Landing from "../pages/Landing";
+
 import Home from "../pages/home"; // Make sure L is capitalized
 import App from "../App";
+import Dashboard from "../pages/Dashboard";
+import Landing from "../pages/landing";
 
 const router = createBrowserRouter([
     {
@@ -13,8 +15,12 @@ const router = createBrowserRouter([
                 element: <Landing />,
             },
             {
-                path: "/home",
+                path: "/shop/:shopId",
                 element: <Home />, 
+            },
+            {
+                path: "/dashboard",
+                element: <Dashboard />, 
             },
         ],
     },

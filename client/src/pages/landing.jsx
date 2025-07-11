@@ -1,7 +1,12 @@
 import { ArrowRight, Play, CheckCircle } from "lucide-react";
 import landingImg from "../assets/landingImg.png";
+import { useAuth } from "@clerk/clerk-react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
+  const user = useAuth();
+
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row items-center justify-center px-6 md:px-16 py-16 bg-white  relative overflow-hidden">
       {/* Background Blurs */}
@@ -31,10 +36,12 @@ export default function Landing() {
           ))}
         </ul>
 
-        <div className="pt-4 flex flex-col sm:flex-row gap-4">
-          <button className="bg-teal-500 text-white px-6 py-3 rounded-full flex items-center gap-2 font-semibold hover:bg-teal-600 transition-all shadow-md">
-            Get Started <ArrowRight className="w-4 h-4" />
-          </button>
+        <div className="pt-4 flex flex-col sm:flex-row gap-4 ">
+          <Link to={(user?.isSignedIn) ? "/dashboard" : ""}  className="">
+            <button className="bg-teal-500 cursor-pointer text-white px-6 py-3 rounded-full flex items-center gap-2 font-semibold hover:bg-teal-600 transition-all shadow-md">
+              Get Started <ArrowRight className="w-4 h-4" />
+            </button>
+          </Link>
           <button className="bg-gray-900 text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-all shadow-md">
             <Play className="w-4 h-4 fill-white" /> Watch Demo
           </button>

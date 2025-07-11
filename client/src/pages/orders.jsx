@@ -1,47 +1,47 @@
 import React, { useState } from "react";
-
+import image from "../assets/black-cofee.jpg";
 const initialSKUs = [
   {
     id: 1,
     name: "Espresso",
     cost: 120,
     stock: 50,
-    image: "./assets/black-cofee.jpg",
+    image:image,
   },
   {
     id: 2,
     name: "Cappuccino",
     cost: 150,
     stock: 25,
-      image: "./assets/black-cofee.jpg",
+      image:image,
   },
   {
     id: 3,
     name: "Latte",
     cost: 140,
     stock: 0,
-      image: "./assets/black-cofee.jpg",
+      image:image,
   },
   {
     id: 4,
     name: "Americano",
     cost: 110,
     stock: 8,
-      image: "./assets/black-cofee.jpg",
+      image:image,
   },
   {
     id: 5,
     name: "Mocha",
     cost: 160,
     stock: 18,
-      image: "./assets/black-cofee.jpg",
+      image:image,
   },
   {
     id: 6,
     name: "Macchiato",
     cost: 130,
     stock: 35,
-      image: "./assets/black-cofee.jpg",
+      image:image,
   },
 ];
 

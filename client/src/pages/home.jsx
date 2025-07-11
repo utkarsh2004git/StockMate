@@ -10,6 +10,7 @@ import Inventory from "./inventory";
 import Analytics from "./analytics";
 import SKUs from "./skus";
 
+
 const TABS = {
     orders: <Orders />,
     inventory: <Inventory />,
@@ -19,6 +20,7 @@ const TABS = {
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState("orders");
+    
 
     return (
         <div className="h-[calc(100vh-64px)] mt-16 flex bg-gray-50">
