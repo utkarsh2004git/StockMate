@@ -45,7 +45,7 @@ const initialSKUs = [
   },
 ];
 
-export default function Orders() {
+export default function Orders({shopId,shopName}) {
   const [skus, setSkus] = useState(initialSKUs);
   const [selectedSKU, setSelectedSKU] = useState(null);
   const [buyer, setBuyer] = useState("");
@@ -70,7 +70,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen p-6 md:px-10">
-      <h2 className="text-3xl font-bold text-black mb-8">StarCoffee Cafe'</h2>
+      <h2 className="text-3xl font-bold text-black mb-8">{shopName?shopName:" StarCoffee Cafe'"}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {skus.map((sku) => (
           <div
