@@ -1,73 +1,46 @@
 import React, { useState } from "react";
-import image from "../assets/black-cofee.jpg";
+import image from "../assets/product.webp";
 import { useEffect } from "react";
 import axios from "axios";
-const initialSKUs = [
-  {
-    _id: 1,
-    name: "Espresso",
-    sold: 120,
-    quantity: 50,
-    image: image,
-  },
-  {
-    _id: 2,
-    name: "Cappuccino",
-    sold: 150,
-    quantity: 25,
-    image: image,
-  },
-  {
-    _id: 3,
-    name: "Latte",
-    sold: 140,
-    quantity: 0,
-    image: image,
-  },
-  {
-    _id: 4,
-    name: "Americano",
-    sold: 110,
-    quantity: 8,
-    image: image,
-  },
-  {
-    _id: 5,
-    name: "Mocha",
-    sold: 160,
-    quantity: 18,
-    image: image,
-  },
-  {
-    _id: 6,
-    name: "Macchiato",
-    sold: 130,
-    quantity: 35,
-    image: image,
-  },
-];
+
 
 export default function Orders({ shopId, shopName }) {
-  const [skus, setSkus] = useState(initialSKUs);
+  const [skus, setSkus] = useState([]);
   const [selectedSKU, setSelectedSKU] = useState(null);
   const [buyer, setBuyer] = useState("");
-  const [quantity, setQty] = useState(1);
+  const [qty, setQty] = useState(1);
   const [showToast, setShowToast] = useState(false);
 
-  const handleSell = () => {
-    const updatedSkus = skus.map((sku) =>
-      sku._id === selectedSKU._id
-        ? { ...sku, quantity: sku.quantity - parseInt(quantity) }
-        : sku
-    );
-    setSkus(updatedSkus);
-    setShowToast(true);
+  const handleSell = async(qty,productId) => {
+    try {
+      const curSku = skus.find((sku) => sku._id === selectedSKU._id);
+      
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/products`, {
+        productId:productId,
+        quantity: curSku.quantity - parseInt(qty),
+      });
 
-    setSelectedSKU(null);
-    setBuyer("");
-    setQty(1);
+      if (response.data.success) {
+        console.log("Order placed successfully:", response.data);
+      } else {
+        console.error("Failed to place order:", response.data.message);
+      }
 
-    setTimeout(() => setShowToast(false), 3000);
+
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+      return;
+
+    } finally {
+      setShowToast(true);
+      setSelectedSKU(null);
+      setBuyer("");
+      setQty(1);
+      setTimeout(() => setShowToast(false), 3000);
+    }
+
+
   };
 
 
@@ -75,10 +48,10 @@ export default function Orders({ shopId, shopName }) {
     const fetchSkus = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${shopId}`);
-        console.log(response.data);
-        
+        // console.log(response.data);
+
         if (response.data.success) {
-          setSkus([...response.data.products, ...initialSKUs]);
+          setSkus([...response.data.products]);
         } else {
           console.error("Failed to fetch SKUs:", response.data.message);
         }
@@ -87,7 +60,7 @@ export default function Orders({ shopId, shopName }) {
       }
     };
     fetchSkus();
-  },[shopId]);
+  }, [shopId,buyer]);
 
 
   return (
@@ -101,7 +74,7 @@ export default function Orders({ shopId, shopName }) {
               }`}
           >
             <img
-              src={sku.image}
+              src={sku.image || image}
               alt={sku.name}
               className="w-full h-100 object-cover"
             />
@@ -143,7 +116,7 @@ export default function Orders({ shopId, shopName }) {
               type="number"
               placeholder="Quantity"
               className="bg-gray-100 p-2 w-full mb-4 shadow-sm rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
-              value={quantity}
+              value={qty}
               min={1}
               max={selectedSKU.quantity}
               onChange={(e) => setQty(e.target.value)}
@@ -157,9 +130,9 @@ export default function Orders({ shopId, shopName }) {
               </button>
               <button
                 className="px-4 py-2 rounded-md bg-teal-500 text-white hover:bg-teal-400"
-                onClick={handleSell}
+                onClick={()=>handleSell(qty,selectedSKU._id)}
                 disabled={
-                  quantity < 1 || quantity > selectedSKU.quantity || buyer.trim() === ""
+                  qty < 1 || qty > selectedSKU.quantity || buyer.trim() === ""
                 }
               >
                 Confirm

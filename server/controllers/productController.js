@@ -46,3 +46,31 @@ export const getProductsByShop = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+
+export const updateProductStock = async(req,res)=>{
+    try {
+        const { productId, quantity } = req.body;
+        console.log(req.body)
+        // Validate required fields
+        if (!productId || quantity === undefined) {
+            return res.status(400).json({ message: 'Product ID and quantity are required.' });
+        }
+
+        // Find the product and update its stock
+        const product = await Product.findByIdAndUpdate(
+            productId,
+            {  quantity: quantity  },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+
+        res.status(200).json({ success: true, message: 'Product stock updated successfully', product });
+    } catch (error) {
+        console.error('Error updating product stock:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}

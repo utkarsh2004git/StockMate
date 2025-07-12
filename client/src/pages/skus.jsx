@@ -108,7 +108,7 @@ export default function SKUManager({shopId}) {
                                         onChange={(e) => setSelectedId(Number(e.target.value))}
                                     >
                                         {skus.map((sku) => (
-                                            <option key={sku.id} value={sku.id}>
+                                            <option key={sku.sku} value={sku.sku}>
                                                 {sku.name} (Current: {sku.qty})
                                             </option>
                                         ))}

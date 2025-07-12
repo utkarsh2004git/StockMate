@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
     PieChart,
     Pie,
@@ -11,8 +11,10 @@ const inventoryData = [
     { id: 1, name: "Espresso", initial: 100, current: 50, price: 120, color: "#14b8a6" },
     { id: 2, name: "Cappuccino", initial: 50, current: 10, price: 150, color: "#0f766e" },
     { id: 3, name: "Latte", initial: 80, current: 20, price: 140, color: "#0d9488" },
-    { id: 4, name: "Mocha", initial: 60, current: 35, price: 160, color: "#115e59" }
+    { id: 4, name: "Mocha", initial: 60, current: 35, price: 160, color: "#115e59" },
 ];
+
+
 
 export default function InventoryDashboard() {
     const totalSummary = inventoryData.reduce(
