@@ -23,7 +23,7 @@ export default function Home() {
         orders: <Orders shopId={shopId} shopName={shopName} />,
         inventory: <Inventory />,
         analytics: <Analytics />,
-        skus: <SKUs />,
+        skus: <SKUs shopId={shopId} />,
     };
     if (!shopId) {
         return <div className="text-center text-red-500">Shop ID is missing</div>;

@@ -1,61 +1,63 @@
 import React, { useState } from "react";
 import image from "../assets/black-cofee.jpg";
+import { useEffect } from "react";
+import axios from "axios";
 const initialSKUs = [
   {
-    id: 1,
+    _id: 1,
     name: "Espresso",
-    cost: 120,
-    stock: 50,
-    image:image,
+    sold: 120,
+    quantity: 50,
+    image: image,
   },
   {
-    id: 2,
+    _id: 2,
     name: "Cappuccino",
-    cost: 150,
-    stock: 25,
-      image:image,
+    sold: 150,
+    quantity: 25,
+    image: image,
   },
   {
-    id: 3,
+    _id: 3,
     name: "Latte",
-    cost: 140,
-    stock: 0,
-      image:image,
+    sold: 140,
+    quantity: 0,
+    image: image,
   },
   {
-    id: 4,
+    _id: 4,
     name: "Americano",
-    cost: 110,
-    stock: 8,
-      image:image,
+    sold: 110,
+    quantity: 8,
+    image: image,
   },
   {
-    id: 5,
+    _id: 5,
     name: "Mocha",
-    cost: 160,
-    stock: 18,
-      image:image,
+    sold: 160,
+    quantity: 18,
+    image: image,
   },
   {
-    id: 6,
+    _id: 6,
     name: "Macchiato",
-    cost: 130,
-    stock: 35,
-      image:image,
+    sold: 130,
+    quantity: 35,
+    image: image,
   },
 ];
 
-export default function Orders({shopId,shopName}) {
+export default function Orders({ shopId, shopName }) {
   const [skus, setSkus] = useState(initialSKUs);
   const [selectedSKU, setSelectedSKU] = useState(null);
   const [buyer, setBuyer] = useState("");
-  const [qty, setQty] = useState(1);
+  const [quantity, setQty] = useState(1);
   const [showToast, setShowToast] = useState(false);
 
   const handleSell = () => {
     const updatedSkus = skus.map((sku) =>
-      sku.id === selectedSKU.id
-        ? { ...sku, stock: sku.stock - parseInt(qty) }
+      sku._id === selectedSKU._id
+        ? { ...sku, quantity: sku.quantity - parseInt(quantity) }
         : sku
     );
     setSkus(updatedSkus);
@@ -68,14 +70,34 @@ export default function Orders({shopId,shopName}) {
     setTimeout(() => setShowToast(false), 3000);
   };
 
+
+  useEffect(() => {
+    const fetchSkus = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${shopId}`);
+        console.log(response.data);
+        
+        if (response.data.success) {
+          setSkus([...response.data.products, ...initialSKUs]);
+        } else {
+          console.error("Failed to fetch SKUs:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching SKUs:", error);
+      }
+    };
+    fetchSkus();
+  },[shopId]);
+
+
   return (
     <div className="min-h-screen p-6 md:px-10">
-      <h2 className="text-3xl font-bold text-black mb-8">{shopName?shopName:" StarCoffee Cafe'"}</h2>
+      <h2 className="text-3xl font-bold text-black mb-8">{shopName ? shopName : " StarCoffee Cafe'"}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {skus.map((sku) => (
           <div
-            key={sku.id}
-            className={`bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col ${sku.stock === 0 ? "opacity-50 pointer-events-none" : ""
+            key={sku._id}
+            className={`bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col ${sku.quantity === 0 ? "opacity-50 pointer-events-none" : ""
               }`}
           >
             <img
@@ -86,15 +108,15 @@ export default function Orders({shopId,shopName}) {
             <div className="p-4 flex-1 flex flex-col justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-black">{sku.name}</h3>
-                <p className="text-sm text-gray-600">₹{sku.cost}</p>
+                <p className="text-sm text-gray-600">₹{sku.sold}</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {sku.stock} in stock
+                  {sku.quantity} in stock
                 </p>
               </div>
               <button
                 className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-xl hover:bg-black transition"
                 onClick={() => setSelectedSKU(sku)}
-                disabled={sku.stock === 0}
+                disabled={sku.quantity === 0}
               >
                 Sell
               </button>
@@ -120,10 +142,10 @@ export default function Orders({shopId,shopName}) {
             <input
               type="number"
               placeholder="Quantity"
-                          className="bg-gray-100 p-2 w-full mb-4 shadow-sm rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
-              value={qty}
+              className="bg-gray-100 p-2 w-full mb-4 shadow-sm rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
+              value={quantity}
               min={1}
-              max={selectedSKU.stock}
+              max={selectedSKU.quantity}
               onChange={(e) => setQty(e.target.value)}
             />
             <div className="flex justify-center gap-2">
@@ -137,7 +159,7 @@ export default function Orders({shopId,shopName}) {
                 className="px-4 py-2 rounded-md bg-teal-500 text-white hover:bg-teal-400"
                 onClick={handleSell}
                 disabled={
-                  qty < 1 || qty > selectedSKU.stock || buyer.trim() === ""
+                  quantity < 1 || quantity > selectedSKU.quantity || buyer.trim() === ""
                 }
               >
                 Confirm

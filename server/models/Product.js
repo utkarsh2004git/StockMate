@@ -11,9 +11,7 @@ const productSchema = new mongoose.Schema({
   imageUrl: String,
   category: String,
   shopId: { type: mongoose.Schema.Types.ObjectId, ref: 'Shop', required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+},{timestamps: true});
 
 
 productSchema.index({ shopId: 1, sku: 1 }, { unique: true });

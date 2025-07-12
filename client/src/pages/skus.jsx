@@ -7,25 +7,26 @@ import {
     TrendingUp,
     TrendingDown
 } from "lucide-react";
+import axios from "axios";
 
 const initialSKUs = [
-    { id: 1, name: "Espresso", qty: 100, cost: 100, price: 120 },
-    { id: 2, name: "Cappuccino", qty: 50, cost: 110, price: 140 },
-    { id: 3, name: "Latte", qty: 25, cost: 90, price: 130 },
-    { id: 4, name: "Mocha", qty: 15, cost: 120, price: 160 },
-    { id: 5, name: "Flat White", qty: 5, cost: 100, price: 125 },
-    { id: 6, name: "Americano", qty: 60, cost: 80, price: 110 },
+    { sku: 1, name: "Espresso", qty: 100, price: 100, sold: 120 },
+    { sku: 2, name: "Cappuccino", qty: 50, price: 110, sold: 140 },
+    { sku: 3, name: "Latte", qty: 25, price: 90, sold: 130 },
+    { sku: 4, name: "Mocha", qty: 15, price: 120, sold: 160 },
+    { sku: 5, name: "Flat White", qty: 5, price: 100, sold: 125 },
+    { sku: 6, name: "Americano", qty: 60, price: 80, sold: 110 },
 ];
 
 
-export default function SKUManager() {
+export default function SKUManager({shopId}) {
     const [skus, setSkus] = useState(initialSKUs);
     const [activeTab, setActiveTab] = useState("stock");
 
     const [selectedId, setSelectedId] = useState(skus[0]?.id || null);
     const [stockToAdd, setStockToAdd] = useState(0);
 
-    const [form, setForm] = useState({ name: "", qty: 0, cost: 0, price: 0 });
+    const [form, setForm] = useState({ name: "", qty: 0, price: 0, sold: 0 });
 
     const handleAddStock = () => {
         if (!selectedId || stockToAdd <= 0) return;
@@ -37,8 +38,8 @@ export default function SKUManager() {
         setStockToAdd(0);
     };
 
-    const handleSaveSKU = () => {
-        if (!form.name || form.qty <= 0 || form.cost <= 0 || form.price <= 0) return;
+    const handleSaveSKU = async(id) => {
+        if (!form.name || form.qty <= 0 || form.price <= 0 || form.sold <= 0) return;
 
         const existingIndex = skus.findIndex((sku) => sku.name === form.name);
         if (existingIndex !== -1) {
@@ -47,12 +48,24 @@ export default function SKUManager() {
             setSkus(updated);
         } else {
             const newSku = {
-                ...form,
-                id: Date.now(),
-            };
+                name: form.name,
+                sku: `SKU-${form.name.toUpperCase()}-${Number(Math.random()*1000).toFixed(0)}`,
+                price:form.price,
+                sold: form.sold,
+                quantity: form.qty,
+                shopId :id
+            };  
             setSkus([...skus, newSku]);
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products`, newSku);
+                if (res.data.success) {
+                    console.log("SKU added successfully:", res.data.product);
+                }
+            } catch (error) {
+                
+            }
         }
-        setForm({ name: "", qty: 0, cost: 0, price: 0 });
+        setForm({ name: "", qty: 0, price: 0, sold: 0 });
     };
 
     return (
@@ -162,8 +175,8 @@ export default function SKUManager() {
                                             type="number"
                                             placeholder="Eg: 110"
                                             className="w-full bg-gray-100 p-2 rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
-                                            value={form.cost}
-                                            onChange={(e) => setForm({ ...form, cost: Number(e.target.value) })}
+                                            value={form.price}
+                                            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
                                         />
                                     </div>
 
@@ -173,13 +186,13 @@ export default function SKUManager() {
                                             type="number"
                                             placeholder="Eg: 140"
                                             className="w-full bg-gray-100 p-2 rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
-                                            value={form.price}
-                                            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                                            value={form.sold}
+                                            onChange={(e) => setForm({ ...form, sold: Number(e.target.value) })}
                                         />
                                     </div>
 
                                     <button
-                                        onClick={handleSaveSKU}
+                                        onClick={()=>handleSaveSKU(shopId)}
                                         className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-lg font-medium transition"
                                     >
                                         Save SKU
@@ -196,12 +209,12 @@ export default function SKUManager() {
                         </h3>
                         <div className="divide-y divide-gray-200 max-h-[500px] overflow-y-auto scrollbar-thin pr-2">
                             {skus.map((sku) => {
-                                const profit = sku.price - sku.cost;
+                                const profit = sku.sold - sku.price;
                                 const isLow = sku.qty <= 20;
 
                                 return (
                                     <div
-                                        key={sku.id}
+                                        key={sku.sku}
                                         className="py-4 text-sm text-gray-800 flex justify-between items-center"
                                     >
                                         <div className="flex items-start gap-3">
@@ -219,7 +232,7 @@ export default function SKUManager() {
                                                     </span>{" "}
                                                     •
                                                     <span className="ml-2">
-                                                        <IndianRupee className="inline w-3 h-3 -mt-1" /> {sku.cost} ➝ ₹{sku.price}
+                                                        <IndianRupee className="inline w-3 h-3 -mt-1" /> {sku.price} ➝ ₹{sku.sold}
                                                     </span>
                                                 </div>
                                                 <div className="mt-1 text-xs">
